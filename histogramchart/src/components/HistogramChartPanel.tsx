@@ -92,7 +92,6 @@ export function HistogramChartPanel(props: HistogramChartPanelProps): ReactEleme
               min={min}
               max={max}
               thresholds={thresholds}
-              logBase={pluginSpec.logBase}
             />
           </Box>
         );

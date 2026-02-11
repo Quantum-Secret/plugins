@@ -11,8 +11,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { ActionOptions, SelectionOptions } from '@perses-dev/plugin-system';
-
 /**
  * The Options object type supported by the TraceTable panel plugin.
  */
@@ -20,8 +18,6 @@ import { ActionOptions, SelectionOptions } from '@perses-dev/plugin-system';
 export interface TraceTableOptions {
   visual?: TraceTableVisualOptions;
   links?: TraceTableCustomLinks;
-  selection?: SelectionOptions;
-  actions?: ActionOptions;
 }
 
 export interface TraceTableVisualOptions {

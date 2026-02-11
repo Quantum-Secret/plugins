@@ -15,12 +15,13 @@ package model
 
 import (
 	"strings"
-	ds "github.com/perses/plugins/loki/schemas/datasources:model"
 )
 
 kind: "LokiLogQuery"
 spec: close({
-	ds.#selector
+	datasource?: {
+		kind: "LokiDatasource"
+	}
 	direction?: "forward" | "backward"
 	query: strings.MinRunes(1)
 })

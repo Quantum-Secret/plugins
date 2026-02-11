@@ -18,11 +18,23 @@ import (
 	commonProxy "github.com/perses/shared/cue/common/proxy"
 )
 
-#kind: "VictoriaLogsDatasource"
-
 kind: #kind
 spec: {
-	commonProxy.#baseHTTPDatasourceSpec
+	#directUrl | #proxy
 }
 
-#selector: common.#datasourceSelector & { _kind: #kind }
+#kind: "VictoriaLogsDatasource"
+
+#directUrl: {
+	directUrl: common.#url
+}
+
+#proxy: {
+	proxy: commonProxy.#HTTPProxy
+}
+
+#selector: common.#datasourceSelector & {
+	datasource?: =~common.#variableSyntaxRegex | {
+		kind: #kind
+	}
+}

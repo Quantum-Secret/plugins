@@ -5,7 +5,6 @@
       "mode": "list",
       "position": "bottom"
     },
-    "sorting": "asc",
     "mappings": [
       {
         "kind": "Value",

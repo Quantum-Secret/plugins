@@ -13,7 +13,6 @@
 
 import { PanelPlugin } from '@perses-dev/plugin-system';
 import { TimeSeriesTablePanel, TimeSeriesTableProps } from './TimeSeriesTablePanel';
-import { TimeSeriesTableItemSelectionActionsEditor } from './components';
 import { TimeSeriesTableOptions } from './model';
 
 /**
@@ -25,7 +24,6 @@ export const TimeSeriesTable: PanelPlugin<TimeSeriesTableOptions, TimeSeriesTabl
   queryOptions: {
     mode: 'instant',
   },
-  panelOptionsEditorComponents: [{ label: 'Item Actions', content: TimeSeriesTableItemSelectionActionsEditor }],
   createInitialOptions: () => {
     return {};
   },

@@ -16,7 +16,6 @@ export * from './ColumnsEditor';
 export * from './EmbeddedPanel';
 export * from './TableCellsEditor';
 export * from './TableColumnsEditor';
-export * from './TableItemSelectionActionsEditor';
 export * from './TablePanel';
 export * from './TableSettingsEditor';
 export * from './TableTransformsEditor';

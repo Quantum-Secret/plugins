@@ -32,7 +32,6 @@ import "list"
 
 kind: "StatusHistoryChart"
 spec: {
-        sorting: "asc"
 		#showLegend: *#panel.options.legend.showLegend | true
 		if #showLegend {
 			legend: {

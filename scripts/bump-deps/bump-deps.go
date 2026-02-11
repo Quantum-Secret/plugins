@@ -14,7 +14,6 @@
 package main
 
 import (
-	"bytes"
 	"flag"
 	"fmt"
 	"os"
@@ -27,8 +26,9 @@ import (
 )
 
 var (
+	bumpCueDeps = regexp.MustCompile(`v:(\s*)"v(\^)?[0-9]+\.[0-9]+\.[0-9]+(-(alpha|beta|rc)\.[0-9]+)?"`)
 	// sharedPackageNames contains the list of packages release by the repository perses/shared to bump
-	sharedPackageNames = []string{"components", "dashboards", "plugin-system", "explore"}
+	sharedPackageNames = []string{"component", "dashboards", "plugin-system", "explorer"}
 	persesPackageName  = "core"
 )
 
@@ -46,25 +46,21 @@ func bumpGoDep(workspace, version string) {
 	logrus.Infof("successfully bumped go dependencies for %s to version %s", workspace, version)
 }
 
-func bumpCueDep(workspace, version string, sharedPackage bool) {
-	packageName := "github.com/perses/perses/cue"
-	if sharedPackage {
-		packageName = "github.com/perses/shared/cue"
-	}
+func replaceCuePackage(data []byte, version string) []byte {
+	return bumpCueDeps.ReplaceAll(data, fmt.Appendf(nil, `v:$1"v%s"`, version))
+}
+
+func bumpCueDep(workspace, version string) {
 	cueModPath := filepath.Join(workspace, "cue.mod", "module.cue")
 	data, err := os.ReadFile(cueModPath)
 	if err != nil {
 		logrus.WithError(err).Fatalf("unable to read the file %s", cueModPath)
 	}
-	if bytes.Contains(data, []byte(packageName)) {
-		if cueErr := command.RunInDirectory(workspace, "cue", "mod", "get", fmt.Sprintf("%s@v%s", packageName, version)); cueErr != nil {
-			logrus.WithError(cueErr).WithField("workspace", workspace).Fatal("unable to bump the cue dependencies")
-		}
-		if cueErr := command.RunInDirectory(workspace, "cue", "mod", "tidy"); cueErr != nil {
-			logrus.WithError(cueErr).WithField("workspace", workspace).Fatal("unable to run cue mod tidy")
-		}
-		logrus.Infof("successfully bumped cue dependencies for %s to version %s", workspace, version)
+	newData := replaceCuePackage(data, version)
+	if writeErr := os.WriteFile(cueModPath, newData, 0644); writeErr != nil {
+		logrus.WithError(writeErr).Fatalf("unable to write the file %s", cueModPath)
 	}
+	logrus.Infof("successfully bumped cue dependencies for %s to version %s", workspace, version)
 }
 
 func replaceNPMPackage(data []byte, version string, componentNames ...string) []byte {
@@ -93,14 +89,13 @@ func bumpPersesDep(workspaces []string, version string) {
 	for _, workspace := range workspaces {
 		bumpGoDep(workspace, version)
 		bumpPackage(workspace, version, persesPackageName)
-		bumpCueDep(workspace, version, false)
+		bumpCueDep(workspace, version)
 	}
 }
 
 func bumpSharedDep(workspaces []string, version string) {
 	for _, workspace := range workspaces {
 		bumpPackage(workspace, version, sharedPackageNames...)
-		bumpCueDep(workspace, version, true)
 	}
 }
 
@@ -112,7 +107,7 @@ func main() {
 	version := flag.String("version", "", "the version to use for the bump.")
 	sharedVersion := flag.String("shared-version", "", "the version for the shared component to use for the bump.")
 	flag.Parse()
-	if *version == "" && *sharedVersion == "" {
+	if *version == "" || *sharedVersion == "" {
 		logrus.Fatal("you must provide a version to use for the bump")
 	}
 

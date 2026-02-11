@@ -18,11 +18,15 @@ import (
 	commonProxy "github.com/perses/shared/cue/common/proxy"
 )
 
-#kind: "ClickHouseDatasource"
-
-kind: #kind
+kind: "ClickHouseDatasource"
 spec: {
-	commonProxy.#baseHTTPDatasourceSpec
+	#directUrl | #proxy
 }
 
-#selector: common.#datasourceSelector & { _kind: #kind }
+#directUrl: {
+	directUrl: common.#url
+}
+
+#proxy: {
+	proxy: commonProxy.#HTTPProxy
+}

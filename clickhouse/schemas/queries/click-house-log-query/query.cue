@@ -15,11 +15,12 @@ package model
 
 import (
 	"strings"
-	ds "github.com/perses/plugins/clickhouse/schemas/datasources/click-house-datasource:model"
 )
 
 kind: "ClickHouseLogQuery"
 spec: close({
-	ds.#selector
-	query: strings.MinRunes(1)
+	datasource?: {
+		kind: "ClickHouseDatasource"
+	}
+	query:             strings.MinRunes(1)
 })
