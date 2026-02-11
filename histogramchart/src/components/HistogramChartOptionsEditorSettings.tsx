@@ -21,7 +21,6 @@ import {
   OptionsEditorGroup,
   ThresholdsEditor,
   ThresholdsEditorProps,
-  SettingsAutocomplete,
 } from '@perses-dev/components';
 import { produce } from 'immer';
 import merge from 'lodash/merge';
@@ -35,8 +34,6 @@ import {
   DEFAULT_THRESHOLDS,
   HistogramChartOptions,
   HistogramChartOptionsEditorProps,
-  LOG_BASE_CONFIG,
-  LOG_BASE_OPTIONS,
 } from '../histogram-chart-model';
 
 export function HistogramChartOptionsEditorSettings(props: HistogramChartOptionsEditorProps): ReactElement {
@@ -61,9 +58,6 @@ export function HistogramChartOptionsEditorSettings(props: HistogramChartOptions
   // ensures decimalPlaces defaults to correct value
   const format = merge({}, DEFAULT_FORMAT, value.format);
   const thresholds = merge({}, DEFAULT_THRESHOLDS, value.thresholds);
-
-  // Get the current log base configuration
-  const logBase = value.logBase ? LOG_BASE_CONFIG[value.logBase] : LOG_BASE_CONFIG['none'];
 
   // max only needs to be set explicitly for units other than percent and percent-decimal
   let minPlaceholder = 'Enter value';
@@ -123,26 +117,6 @@ export function HistogramChartOptionsEditorSettings(props: HistogramChartOptions
                 }}
                 placeholder={maxPlaceholder}
                 sx={{ width: '100%' }}
-              />
-            }
-          />
-          <OptionsEditorControl
-            label="Log Base"
-            control={
-              <SettingsAutocomplete
-                value={{
-                  ...logBase,
-                  id: logBase?.label ?? 'None',
-                }}
-                options={LOG_BASE_OPTIONS}
-                onChange={(__, newValue) => {
-                  onChange(
-                    produce(value, (draft: HistogramChartOptions) => {
-                      draft.logBase = newValue.log;
-                    })
-                  );
-                }}
-                disableClearable
               />
             }
           />

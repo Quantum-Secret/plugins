@@ -3,7 +3,6 @@
     "spec": {
         "legend": {
             "position": "bottom"
-        },
-        "sorting": "asc"
+        }
     }
 }

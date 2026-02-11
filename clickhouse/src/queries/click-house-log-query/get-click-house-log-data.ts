@@ -14,20 +14,20 @@
 import { replaceVariables } from '@perses-dev/plugin-system';
 import { LogEntry, LogData } from '@perses-dev/core';
 import { ClickHouseClient, ClickHouseQueryResponse } from '../../model/click-house-client';
-import { DEFAULT_DATASOURCE } from '../constants';
 import { ClickHouseLogQuerySpec } from './click-house-log-query-types';
+import { DEFAULT_DATASOURCE } from '../constants';
 import { LogQueryPlugin } from './log-query-plugin-interface';
 import { replaceClickHouseBuiltinVariables } from '../click-house-time-series-query/replace-click-house-builtin-variables';
 
 function flattenObject(
-  obj: Record<string, unknown>,
+  obj: Record<string, any>,
   parentKey = '',
-  result: Record<string, unknown> = {}
-): Record<string, unknown> {
+  result: Record<string, any> = {}
+): Record<string, any> {
   for (const [key, value] of Object.entries(obj)) {
     const newKey = parentKey ? `${parentKey}.${key}` : key;
     if (value && typeof value === 'object' && !Array.isArray(value)) {
-      flattenObject(value as Record<string, unknown>, newKey, result);
+      flattenObject(value, newKey, result);
     } else {
       result[newKey] = value;
     }
@@ -38,13 +38,13 @@ function flattenObject(
 
 function convertStreamsToLogs(streams: LogEntry[]): LogData {
   const entries: LogEntry[] = streams.map((entry) => {
-    const flattened = flattenObject(entry as unknown as Record<string, unknown>);
+    const flattened = flattenObject(entry);
 
-    if (!flattened['Timestamp'] && flattened['log_time']) {
-      flattened['Timestamp'] = flattened['log_time'];
+    if (!flattened.Timestamp && flattened.log_time) {
+      flattened.Timestamp = flattened.log_time;
     }
 
-    const sortedEntry: Record<string, unknown> = {};
+    const sortedEntry: Record<string, any> = {};
     Object.keys(flattened)
       .sort((a, b) => a.localeCompare(b))
       .forEach((key) => {
@@ -57,8 +57,8 @@ function convertStreamsToLogs(streams: LogEntry[]): LogData {
       .join(' ');
 
     return {
-      timestamp: sortedEntry?.['Timestamp'] as unknown as number,
-      labels: sortedEntry as Record<string, string>,
+      timestamp: sortedEntry?.Timestamp,
+      labels: sortedEntry,
       line,
     } as LogEntry;
   });
@@ -96,7 +96,7 @@ export const getClickHouseLogData: LogQueryPlugin<ClickHouseLogQuerySpec>['getLo
 
   return {
     timeRange: { start, end },
-    logs: convertStreamsToLogs(response.data as LogEntry[]),
+    logs: convertStreamsToLogs(response.data),
     metadata: {
       executedQueryString: query,
     },

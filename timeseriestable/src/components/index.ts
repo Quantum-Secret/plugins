@@ -13,4 +13,3 @@
 
 export * from './DataTable';
 export * from './SeriesName';
-export * from './TimeSeriesTableItemSelectionActionsEditor';

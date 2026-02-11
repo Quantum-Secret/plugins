@@ -12,8 +12,8 @@
 // limitations under the License.
 
 import {
-  OptionsEditorColumn,
   OptionsEditorGrid,
+  OptionsEditorColumn,
   ThresholdsEditor,
   ThresholdsEditorProps,
 } from '@perses-dev/components';

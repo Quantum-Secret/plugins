@@ -25,7 +25,7 @@ export interface ClickHouseQueryOptions {
 
 export interface ClickHouseQueryResponse {
   status: 'success' | 'error';
-  data: unknown;
+  data: any;
 }
 
 export interface ClickHouseClient {

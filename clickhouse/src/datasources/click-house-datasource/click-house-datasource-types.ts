@@ -34,7 +34,7 @@ export interface ClickHouseDatasourceResponse {
   status: string;
   warnings?: string[];
   // TODO: adjust this type to match your datasource response shape
-  data: unknown;
+  data: any;
 }
 
 export interface ClickHouseDatasourceClient extends DatasourceClient {

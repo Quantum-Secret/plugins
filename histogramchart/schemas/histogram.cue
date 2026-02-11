@@ -23,5 +23,4 @@ spec: close({
 	min?:        number
 	max?:        number & >= min
 	thresholds?: common.#thresholds
-	logBase?:    2 | 10
 })

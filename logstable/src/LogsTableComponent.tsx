@@ -19,12 +19,7 @@ import { LogsList } from './components/LogsList';
 export function LogsTableComponent(props: LogsTableProps): ReactElement | null {
   const { queryResults, spec } = props;
 
-  // all queries results must be included
-  const logs = queryResults
-    .flatMap((result) => result?.data.logs?.entries ?? [])
-    .sort((a, b) => b.timestamp - a.timestamp);
-
-  if (!logs.length) {
+  if (queryResults[0]?.data.logs === undefined) {
     return (
       <Box
         sx={{
@@ -38,6 +33,7 @@ export function LogsTableComponent(props: LogsTableProps): ReactElement | null {
       </Box>
     );
   }
+  const logs = queryResults[0]?.data.logs.entries;
 
   return <LogsList logs={logs} spec={spec} />;
 }

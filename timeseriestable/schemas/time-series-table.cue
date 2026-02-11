@@ -13,12 +13,5 @@
 
 package model
 
-import (
-	"github.com/perses/shared/cue/common"
-)
-
 kind: "TimeSeriesTable"
-spec: close({
-  selection?: common.#selection
-	actions?:   common.#actions
-})
+spec: close({})
