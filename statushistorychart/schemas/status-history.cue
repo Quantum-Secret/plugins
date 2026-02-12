@@ -21,4 +21,6 @@ kind: "StatusHistoryChart"
 spec: close({
 	legend?: common.#legend
 	mappings?: [...common.#mappings]
+	sorting?: "asc" | "desc"
+	rowHeight?: "auto" | number
 })

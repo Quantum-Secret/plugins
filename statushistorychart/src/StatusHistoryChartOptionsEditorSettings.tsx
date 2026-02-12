@@ -13,9 +13,17 @@
 
 import { LegendOptionsEditor, LegendOptionsEditorProps } from '@perses-dev/plugin-system';
 import { produce } from 'immer';
-import { OptionsEditorGroup, OptionsEditorGrid, OptionsEditorColumn } from '@perses-dev/components';
-import { Button } from '@mui/material';
-import { ReactElement } from 'react';
+import {
+  OptionsEditorGroup,
+  OptionsEditorGrid,
+  OptionsEditorColumn,
+  OptionsEditorControl,
+  SortSelector,
+  SortOption,
+  SortSelectorProps,
+} from '@perses-dev/components';
+import { Button, Switch, TextField } from '@mui/material';
+import { ChangeEvent, ReactElement } from 'react';
 import { StatusHistoryChartOptions, StatusHistroyChartEditorProps } from './status-history-model.js';
 
 export function StatusHistoryChartOptionsEditorSettings(props: StatusHistroyChartEditorProps): ReactElement {
@@ -30,6 +38,14 @@ export function StatusHistoryChartOptionsEditorSettings(props: StatusHistroyChar
     );
   };
 
+  const handleSortChange: SortSelectorProps['onChange'] = (newSort: SortOption) => {
+    onChange(
+      produce(value, (draft: StatusHistoryChartOptions) => {
+        draft.sorting = newSort;
+      })
+    );
+  };
+
   return (
     <OptionsEditorGrid>
       <OptionsEditorColumn>
@@ -39,6 +55,43 @@ export function StatusHistoryChartOptionsEditorSettings(props: StatusHistroyChar
           value={value.legend}
           onChange={handleLegendChange}
         />
+        <OptionsEditorGroup title="Visual">
+          <SortSelector value={value.sorting} onChange={handleSortChange} />
+          <OptionsEditorControl
+            label="Auto Row Height"
+            control={
+              <Switch
+                checked={value.rowHeight === undefined || value.rowHeight === 'auto'}
+                onChange={(_: ChangeEvent, checked: boolean) => {
+                  onChange(
+                    produce(value, (draft: StatusHistoryChartOptions) => {
+                      draft.rowHeight = checked ? 'auto' : 40;
+                    })
+                  );
+                }}
+              />
+            }
+          />
+          {typeof value.rowHeight === 'number' && (
+            <OptionsEditorControl
+              label="Row Height"
+              control={
+                <TextField
+                  type="number"
+                  value={value.rowHeight}
+                  slotProps={{ input: { inputProps: { min: 1, step: 1 } } }}
+                  onChange={(e) => {
+                    onChange(
+                      produce(value, (draft: StatusHistoryChartOptions) => {
+                        draft.rowHeight = parseInt(e.target.value) || 40;
+                      })
+                    );
+                  }}
+                />
+              }
+            />
+          )}
+        </OptionsEditorGroup>
       </OptionsEditorColumn>
       <OptionsEditorColumn>
         <OptionsEditorGroup title="Reset Settings">

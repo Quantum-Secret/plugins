@@ -16,7 +16,7 @@ import { TimeSeriesQueryPlugin, replaceVariables } from '@perses-dev/plugin-syst
 import { ClickHouseTimeSeriesQuerySpec } from './click-house-query-types';
 import { DEFAULT_DATASOURCE } from '../constants';
 import { ClickHouseClient, ClickHouseQueryResponse } from '../../model/click-house-client';
-import { replaceClickHouseBuiltinVariables } from './replace-click-house-builtin-variables';
+import { replaceClickHouseBuiltinVariables } from '../replace-click-house-builtin-variables';
 
 // Default minimum step in milliseconds (15 seconds)
 const DEFAULT_MIN_STEP_MS = 15 * 1000;
@@ -97,7 +97,7 @@ function buildTimeSeries(response: ClickHouseQueryResponse | undefined): TimeSer
   const result: TimeSeries[] = [];
   for (const { labels, values } of seriesMap.values()) {
     // Sort values by timestamp
-    values.sort((a, b) => a[0] - b[0]);
+    values.sort((a, b) => a[0]! - b[0]!);
 
     result.push({
       name: labelsToName(labels),
